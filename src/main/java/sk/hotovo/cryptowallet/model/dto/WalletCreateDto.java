@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
-public class WalletInputDto {
+public class WalletCreateDto {
 
     @NotBlank
     private String name;

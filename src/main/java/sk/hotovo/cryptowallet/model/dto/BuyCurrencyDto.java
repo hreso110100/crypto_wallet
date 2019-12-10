@@ -1,13 +1,13 @@
 package sk.hotovo.cryptowallet.model.dto;
 
-import org.hibernate.validator.constraints.Range;
+import javax.validation.constraints.DecimalMin;
 import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public class BuyCurrencyDto {
 
     private CurrencyEnum sourceCurrency;
 
-    @Range
+    @DecimalMin("0.1")
     private Double sourceAmount;
 
     private CurrencyEnum destinationCurrency;

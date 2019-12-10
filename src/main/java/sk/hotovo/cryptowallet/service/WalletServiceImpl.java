@@ -24,6 +24,11 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public void update(Wallet wallet) {
+        walletRepository.update(wallet);
+    }
+
+    @Override
     public Wallet findByName(String name) {
         return walletRepository.findByName(name);
     }

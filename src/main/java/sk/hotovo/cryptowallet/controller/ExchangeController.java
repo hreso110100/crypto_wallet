@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.BuyCurrencyDto;
@@ -16,7 +17,8 @@ import sk.hotovo.cryptowallet.model.response.ResponseCode;
 import sk.hotovo.cryptowallet.service.ExchangeServiceImpl;
 import sk.hotovo.cryptowallet.service.WalletServiceImpl;
 
-@RestController("/exchange")
+@RestController
+@RequestMapping("/market")
 public class ExchangeController {
 
     private WalletServiceImpl walletService;
@@ -30,7 +32,7 @@ public class ExchangeController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping
+    @PostMapping("/buy")
     public ResponseEntity buyCurrency(@RequestBody @Valid BuyCurrencyDto buyCurrencyDto) {
         Wallet sourceWallet = walletService.findByCurrency(buyCurrencyDto.getSourceCurrency());
         Wallet destinationWallet = walletService.findByCurrency(buyCurrencyDto.getDestinationCurrency());

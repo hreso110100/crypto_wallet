@@ -19,27 +19,38 @@ public class WalletRepository {
      * This method adds some wallets at start of the app.
      */
     private void mockPortfolio() {
-        Wallet wallet1 = new Wallet("test1", CurrencyEnum.EUR, 1000d);
-        Wallet wallet2 = new Wallet("test2", CurrencyEnum.BTC, 0d);
+        Wallet wallet1 = new Wallet("test1", CurrencyEnum.EUR, 1_000d);
+        Wallet wallet2 = new Wallet("test2", CurrencyEnum.USD, 100_000d);
+        Wallet wallet3 = new Wallet("test3", CurrencyEnum.BTC, 0d);
 
         portfolio.getWallets().put(wallet1.getCurrency(), wallet1);
         portfolio.getWallets().put(wallet2.getCurrency(), wallet2);
+        portfolio.getWallets().put(wallet3.getCurrency(), wallet3);
     }
 
     /**
      * This method saves wallet to portfolio. Save will be successful only if portfolio does not contains wallet with
      * given currency.
      *
-     * @param walletToSave Wallet object to save
+     * @param wallet Wallet object to save
      * @return true if save was successful, false otherwise
      */
-    public boolean save(Wallet walletToSave) {
-        if (!portfolio.getWallets().containsKey(walletToSave.getCurrency())) {
-            portfolio.getWallets().put(walletToSave.getCurrency(), walletToSave);
+    public boolean save(Wallet wallet) {
+        if (!portfolio.getWallets().containsKey(wallet.getCurrency())) {
+            portfolio.getWallets().put(wallet.getCurrency(), wallet);
 
             return true;
         }
         return false;
+    }
+
+    /**
+     * This method updates wallet.
+     *
+     * @param wallet Wallet object to update
+     */
+    public void update(Wallet wallet) {
+        portfolio.getWallets().put(wallet.getCurrency(), wallet);
     }
 
     /**
