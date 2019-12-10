@@ -2,29 +2,39 @@ package sk.hotovo.cryptowallet.service;
 
 import org.springframework.stereotype.Service;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
+import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 import sk.hotovo.cryptowallet.repository.WalletRepository;
 
 @Service
 public class WalletServiceImpl implements WalletService {
 
-    private final WalletRepository walletRepository;
+    private WalletRepository walletRepository;
 
     public WalletServiceImpl(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
     @Override
-    public void save(Wallet wallet) {
-        walletRepository.save(wallet);
+    public boolean save(Wallet wallet) {
+        if (wallet.getBalance() == null) {
+            wallet.setBalance(0d);
+        }
+
+        return walletRepository.save(wallet);
     }
 
     @Override
-    public Wallet findById(String id) {
-        return walletRepository.findById(id);
+    public Wallet findByName(String name) {
+        return walletRepository.findByName(name);
     }
 
     @Override
-    public void delete(String id) {
-        walletRepository.delete(id);
+    public Wallet findByCurrency(CurrencyEnum currency) {
+        return walletRepository.findByCurrency(currency);
+    }
+
+    @Override
+    public boolean delete(CurrencyEnum currency) {
+       return walletRepository.delete(currency);
     }
 }
