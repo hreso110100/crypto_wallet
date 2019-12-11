@@ -4,5 +4,7 @@ public enum CurrencyEnum {
     USD,
     EUR,
     BTC,
-    ETH
+    ETH,
+    XMR,
+    XRP
 }

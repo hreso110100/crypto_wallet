@@ -1,5 +1,9 @@
 package sk.hotovo.cryptowallet.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
+import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
 import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 @Service
@@ -21,10 +26,18 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Value("${cryptocompare.key}")
     private String cryptoCompareKey;
 
-    private RestTemplate restTemplate;
+    @Value("${coinapi.url}")
+    private String coinapiURL;
 
-    public ExchangeServiceImpl(RestTemplate restTemplate) {
+    @Value("${coinapi.key}")
+    private String coinapiKey;
+
+    private RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    public ExchangeServiceImpl(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -60,5 +73,28 @@ public class ExchangeServiceImpl implements ExchangeService {
         destination.setBalance(destination.getBalance() + sumToTransfer);
 
         return true;
+    }
+
+    @Override
+    public ArrayList<CryptoCurrencyPriceDto> getPrices() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-CoinAPI-Key", cryptoCompareKey);
+
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
+
+        try {
+            ResponseEntity<String> jsonResponse = restTemplate
+                    .exchange(coinapiURL, HttpMethod.GET, entity, String.class);
+
+            if (jsonResponse.getBody() != null) {
+
+                return new ArrayList<>(
+                        Arrays.asList(objectMapper.readValue(jsonResponse.getBody(), CryptoCurrencyPriceDto[].class)));
+            } else {
+                return null;
+            }
+        } catch (RestClientException | JsonProcessingException e) {
+            return null;
+        }
     }
 }

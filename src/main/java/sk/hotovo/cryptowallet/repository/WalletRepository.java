@@ -44,11 +44,6 @@ public class WalletRepository {
         return false;
     }
 
-    /**
-     * This method updates wallet.
-     *
-     * @param wallet Wallet object to update
-     */
     public void update(Wallet wallet) {
         portfolio.getWallets().put(wallet.getCurrency(), wallet);
     }
