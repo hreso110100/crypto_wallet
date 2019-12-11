@@ -6,7 +6,7 @@ import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 @Repository
-public class WalletRepository {
+public class WalletRepository  {
 
     private Portfolio portfolio;
 
@@ -26,6 +26,7 @@ public class WalletRepository {
         portfolio.getWallets().put(wallet1.getCurrency(), wallet1);
         portfolio.getWallets().put(wallet2.getCurrency(), wallet2);
         portfolio.getWallets().put(wallet3.getCurrency(), wallet3);
+
     }
 
     /**

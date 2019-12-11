@@ -1,12 +1,12 @@
 package sk.hotovo.cryptowallet.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class CryptoCurrencyPriceDto {
 
     private String name;
 
-    @JsonProperty("price_usd")
+    @JsonAlias("price_usd")
     private Double priceUsd;
 
     public String getName() {

@@ -39,7 +39,7 @@ public class WalletController {
         Wallet wallet = modelMapper.map(walletCreateDto, Wallet.class);
 
         if (walletService.save(wallet)) {
-            return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESSFUL, wallet), HttpStatus.CREATED);
+            return new ResponseEntity<>(new Response(ResponseCode.SUCCESSFUL), HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.BAD_REQUEST);
         }

@@ -31,6 +31,6 @@ public interface ExchangeService {
      *
      * @return List of currencies and its prices in USD.
      */
-    ArrayList<CryptoCurrencyPriceDto> getPrices();
+    ArrayList<CryptoCurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize);
 
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -76,7 +78,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public ArrayList<CryptoCurrencyPriceDto> getPrices() {
+    public ArrayList<CryptoCurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-CoinAPI-Key", cryptoCompareKey);
 
@@ -88,13 +90,37 @@ public class ExchangeServiceImpl implements ExchangeService {
 
             if (jsonResponse.getBody() != null) {
 
-                return new ArrayList<>(
+                ArrayList<CryptoCurrencyPriceDto> prices = new ArrayList<>(
                         Arrays.asList(objectMapper.readValue(jsonResponse.getBody(), CryptoCurrencyPriceDto[].class)));
+
+                return doPagination(pageNumber, pageSize, prices);
             } else {
                 return null;
             }
         } catch (RestClientException | JsonProcessingException e) {
             return null;
         }
+    }
+
+    /**
+     * This method returns paginated version of original list of data.
+     *
+     * @param pageNumber Specific number of page where pagination will start.
+     * @param pageSize Number of data to be returned
+     * @param data List of data to be paginated
+     * @return Paginated list of original data
+     */
+    private <T> ArrayList<T> doPagination(Integer pageNumber, Integer pageSize, ArrayList<T> data) {
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+
+        int start = Math.toIntExact(paging.getOffset());
+        int end = Math.min((start + paging.getPageSize()), data.size());
+
+        try {
+            return new ArrayList<>(data.subList(start, end));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
     }
 }

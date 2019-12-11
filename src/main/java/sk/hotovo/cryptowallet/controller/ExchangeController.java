@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.BuyCurrencyDto;
@@ -36,16 +37,17 @@ public class ExchangeController {
     }
 
     @GetMapping("/prices")
-    public ResponseEntity getAllPrices() {
+    public ResponseEntity getAllPrices(@RequestParam(defaultValue = "0") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
 
-        ArrayList<CryptoCurrencyPriceDto> prices = exchangeService.getPrices();
+        ArrayList<CryptoCurrencyPriceDto> prices = exchangeService.getPrices(pageNumber, pageSize);
 
         if (prices != null) {
 
             return new ResponseEntity<>(
                     new Response<>(ResponseCode.SUCCESSFUL, prices), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/buy")
