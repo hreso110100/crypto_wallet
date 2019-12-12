@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.WalletCreateDto;
 import sk.hotovo.cryptowallet.model.dto.WalletOutputDto;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 import sk.hotovo.cryptowallet.model.response.Response;
 import sk.hotovo.cryptowallet.model.response.ResponseCode;
 import sk.hotovo.cryptowallet.service.WalletServiceImpl;
@@ -58,7 +57,7 @@ public class WalletController {
     }
 
     @PatchMapping("/{walletCurrency}")
-    public ResponseEntity updateWallet(@PathVariable CurrencyEnum walletCurrency,
+    public ResponseEntity updateWallet(@PathVariable String walletCurrency,
             @RequestBody HashMap<String, String> payload) {
         Wallet wallet = walletService.findByCurrency(walletCurrency);
 
@@ -73,7 +72,7 @@ public class WalletController {
     }
 
     @PatchMapping("/topup/{walletCurrency}")
-    public ResponseEntity topUpWallet(@PathVariable CurrencyEnum walletCurrency,
+    public ResponseEntity topUpWallet(@PathVariable String walletCurrency,
             @RequestBody HashMap<String, Double> payload) {
 
         Wallet wallet = walletService.findByCurrency(walletCurrency);
@@ -89,7 +88,7 @@ public class WalletController {
     }
 
     @DeleteMapping("/{walletCurrency}")
-    public ResponseEntity deleteWallet(@PathVariable CurrencyEnum walletCurrency) {
+    public ResponseEntity deleteWallet(@PathVariable String walletCurrency) {
 
         if (walletService.delete(walletCurrency)) {
             return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESSFUL), HttpStatus.OK);

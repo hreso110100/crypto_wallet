@@ -1,11 +1,10 @@
 package sk.hotovo.cryptowallet.model.dto;
 
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public class WalletOutputDto {
 
     private String name;
-    private CurrencyEnum currency;
+    private String currency;
     private double balance;
 
     public String getName() {
@@ -16,11 +15,11 @@ public class WalletOutputDto {
         this.name = name;
     }
 
-    public CurrencyEnum getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(CurrencyEnum currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

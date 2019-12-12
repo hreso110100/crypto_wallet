@@ -3,7 +3,6 @@ package sk.hotovo.cryptowallet.service;
 import java.util.ArrayList;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public interface ExchangeService {
 
@@ -14,7 +13,7 @@ public interface ExchangeService {
      * @param destination Destination currency
      * @return Exchange rate between specified currencies
      */
-    Double getExchangeRate(CurrencyEnum source, CurrencyEnum destination);
+    Double getExchangeRate(String source, String destination);
 
     /**
      * This method transfers amount of money between two wallets.

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 @Service
 public class ExchangeServiceImpl implements ExchangeService {
@@ -43,7 +43,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public Double getExchangeRate(CurrencyEnum source, CurrencyEnum destination) {
+    public Double getExchangeRate(String source, String destination) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("authorization", "Apikey " + cryptoCompareKey);
 
@@ -57,7 +57,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
             return Double.parseDouble(
                     jsonObject.getJSONObject(String.valueOf(source)).get(String.valueOf(destination)).toString());
-        } catch (RestClientException e) {
+        } catch (RestClientException | JSONException e) {
             return null;
         }
     }
@@ -95,10 +95,10 @@ public class ExchangeServiceImpl implements ExchangeService {
 
                 return doPagination(pageNumber, pageSize, prices);
             } else {
-                return null;
+                return new ArrayList<>();
             }
         } catch (RestClientException | JsonProcessingException e) {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -111,15 +111,15 @@ public class ExchangeServiceImpl implements ExchangeService {
      * @return Paginated list of original data
      */
     private <T> ArrayList<T> doPagination(Integer pageNumber, Integer pageSize, ArrayList<T> data) {
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
-
-        int start = Math.toIntExact(paging.getOffset());
-        int end = Math.min((start + paging.getPageSize()), data.size());
-
         try {
+            Pageable paging = PageRequest.of(pageNumber, pageSize);
+
+            int start = Math.toIntExact(paging.getOffset());
+            int end = Math.min((start + paging.getPageSize()), data.size());
+
             return new ArrayList<>(data.subList(start, end));
         } catch (IllegalArgumentException e) {
-            return null;
+            return new ArrayList<>();
         }
 
     }

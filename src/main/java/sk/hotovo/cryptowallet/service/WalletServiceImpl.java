@@ -2,7 +2,6 @@ package sk.hotovo.cryptowallet.service;
 
 import org.springframework.stereotype.Service;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 import sk.hotovo.cryptowallet.repository.WalletRepository;
 
 @Service
@@ -34,12 +33,12 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet findByCurrency(CurrencyEnum currency) {
+    public Wallet findByCurrency(String currency) {
         return walletRepository.findByCurrency(currency);
     }
 
     @Override
-    public boolean delete(CurrencyEnum currency) {
+    public boolean delete(String currency) {
        return walletRepository.delete(currency);
     }
 }

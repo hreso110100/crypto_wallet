@@ -1,12 +1,11 @@
 package sk.hotovo.cryptowallet.model.dao;
 
 import java.util.HashMap;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public class Portfolio {
 
     private String owner;
-    private HashMap<CurrencyEnum, Wallet> wallets;
+    private HashMap<String, Wallet> wallets;
 
     public Portfolio(String owner) {
         this.owner = owner;
@@ -21,12 +20,12 @@ public class Portfolio {
         this.owner = owner;
     }
 
-    public HashMap<CurrencyEnum, Wallet> getWallets() {
+    public HashMap<String, Wallet> getWallets() {
         return wallets;
     }
 
     public void setWallets(
-            HashMap<CurrencyEnum, Wallet> wallets) {
+            HashMap<String, Wallet> wallets) {
         this.wallets = wallets;
     }
 }

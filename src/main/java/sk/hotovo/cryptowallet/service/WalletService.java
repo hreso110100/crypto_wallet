@@ -1,7 +1,6 @@
 package sk.hotovo.cryptowallet.service;
 
 import sk.hotovo.cryptowallet.model.dao.Wallet;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public interface WalletService {
 
@@ -11,7 +10,7 @@ public interface WalletService {
 
     Wallet findByName(String name);
 
-    Wallet findByCurrency(CurrencyEnum currency);
+    Wallet findByCurrency(String currency);
 
-    boolean delete(CurrencyEnum currency);
+    boolean delete(String currency);
 }

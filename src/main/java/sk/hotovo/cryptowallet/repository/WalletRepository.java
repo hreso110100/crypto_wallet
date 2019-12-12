@@ -3,7 +3,6 @@ package sk.hotovo.cryptowallet.repository;
 import org.springframework.stereotype.Repository;
 import sk.hotovo.cryptowallet.model.dao.Portfolio;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 @Repository
 public class WalletRepository  {
@@ -19,9 +18,9 @@ public class WalletRepository  {
      * This method adds some wallets at start of the app.
      */
     private void mockPortfolio() {
-        Wallet wallet1 = new Wallet("test1", CurrencyEnum.EUR, 1_000d);
-        Wallet wallet2 = new Wallet("test2", CurrencyEnum.USD, 100_000d);
-        Wallet wallet3 = new Wallet("test3", CurrencyEnum.BTC, 0d);
+        Wallet wallet1 = new Wallet("test1", "EUR", 1_000d);
+        Wallet wallet2 = new Wallet("test2","USD", 100_000d);
+        Wallet wallet3 = new Wallet("test3", "BTC", 0d);
 
         portfolio.getWallets().put(wallet1.getCurrency(), wallet1);
         portfolio.getWallets().put(wallet2.getCurrency(), wallet2);
@@ -70,7 +69,7 @@ public class WalletRepository  {
      * @param currency Currency of the wallet
      * @return Wallet object if exists, null otherwise
      */
-    public Wallet findByCurrency(CurrencyEnum currency) {
+    public Wallet findByCurrency(String currency) {
         if (portfolio.getWallets().containsKey(currency)) {
             return portfolio.getWallets().get(currency);
         }
@@ -83,7 +82,7 @@ public class WalletRepository  {
      * @param currency Currency of the wallet
      * @return true if deleted, false otherwise
      */
-    public boolean delete(CurrencyEnum currency) {
+    public boolean delete(String currency) {
         Wallet wallet = findByCurrency(currency);
 
         if (wallet != null && wallet.getBalance() == 0) {

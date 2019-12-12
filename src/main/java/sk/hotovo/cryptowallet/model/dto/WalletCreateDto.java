@@ -2,23 +2,23 @@ package sk.hotovo.cryptowallet.model.dto;
 
 import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public class WalletCreateDto {
 
     @NotBlank
     private String name;
 
-    private CurrencyEnum currency;
+    @NotBlank
+    private String currency;
 
     @Range
     private Double balance;
 
-    public CurrencyEnum getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(CurrencyEnum currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

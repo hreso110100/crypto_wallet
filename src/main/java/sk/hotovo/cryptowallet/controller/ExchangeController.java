@@ -42,12 +42,9 @@ public class ExchangeController {
 
         ArrayList<CryptoCurrencyPriceDto> prices = exchangeService.getPrices(pageNumber, pageSize);
 
-        if (prices != null) {
+        return new ResponseEntity<>(
+                new Response<>(ResponseCode.SUCCESSFUL, prices), HttpStatus.OK);
 
-            return new ResponseEntity<>(
-                    new Response<>(ResponseCode.SUCCESSFUL, prices), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/buy")
@@ -59,7 +56,7 @@ public class ExchangeController {
                 .getExchangeRate(buyCurrencyDto.getSourceCurrency(), buyCurrencyDto.getDestinationCurrency());
 
         if (exchangeRate == null) {
-            return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.BAD_REQUEST);
         }
 
         if (exchangeService

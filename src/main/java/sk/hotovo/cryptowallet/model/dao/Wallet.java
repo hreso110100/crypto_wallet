@@ -2,14 +2,13 @@ package sk.hotovo.cryptowallet.model.dao;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import sk.hotovo.cryptowallet.model.enums.CurrencyEnum;
 
 public class Wallet {
 
     private String id;
     private String name;
     private LocalDateTime createdAt;
-    private CurrencyEnum currency;
+    private String currency;
     private Double balance;
 
     public Wallet() {
@@ -17,7 +16,7 @@ public class Wallet {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Wallet(String name, CurrencyEnum currency, Double balance) {
+    public Wallet(String name, String currency, Double balance) {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.name = name;
@@ -45,11 +44,11 @@ public class Wallet {
         this.balance = balance;
     }
 
-    public CurrencyEnum getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(CurrencyEnum currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
