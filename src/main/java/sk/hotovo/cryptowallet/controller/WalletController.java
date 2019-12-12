@@ -1,5 +1,9 @@
 package sk.hotovo.cryptowallet.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.HashMap;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -33,8 +37,13 @@ public class WalletController {
         this.modelMapper = objectMapper;
     }
 
+    @ApiOperation(value = "Creates wallet of given currency. Starting amount is not required.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Creation of wallet was successful."),
+            @ApiResponse(code = 400, message = "Wallet with entered currency already exists."),
+    })
     @PostMapping
-    public ResponseEntity createWallet(@RequestBody @Valid WalletCreateDto walletCreateDto) {
+    public ResponseEntity createWallet(@ApiParam(value = "Wallet to be created.") @RequestBody @Valid WalletCreateDto walletCreateDto) {
         Wallet wallet = modelMapper.map(walletCreateDto, Wallet.class);
 
         if (walletService.save(wallet)) {
@@ -44,8 +53,14 @@ public class WalletController {
         }
     }
 
+    @ApiOperation(value = "Gets detail of specific wallet.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieving detail of specified wallet."),
+            @ApiResponse(code = 404, message = "Wallet does not exists."),
+    })
     @GetMapping
-    public ResponseEntity findWalletByName(@RequestParam("name") String walletName) {
+    public ResponseEntity findWalletByName(
+            @ApiParam(value = "Name of wallet.") @RequestParam("name") String walletName) {
         Wallet wallet = walletService.findByName(walletName);
 
         if (wallet == null) {
@@ -56,9 +71,14 @@ public class WalletController {
                 HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Updates name of wallet.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful update of wallet's name."),
+            @ApiResponse(code = 404, message = "Wallet does not exists."),
+    })
     @PatchMapping("/{walletCurrency}")
-    public ResponseEntity updateWallet(@PathVariable String walletCurrency,
-            @RequestBody HashMap<String, String> payload) {
+    public ResponseEntity updateWallet(@ApiParam(value = "Currency of wallet.") @PathVariable String walletCurrency,
+            @ApiParam(value = "New name of the wallet. Allowed JSON key is: name") @RequestBody HashMap<String, String> payload) {
         Wallet wallet = walletService.findByCurrency(walletCurrency);
 
         if (wallet == null) {
@@ -71,9 +91,14 @@ public class WalletController {
         return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESSFUL), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Top up balance of wallet with given amount.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful update of balance."),
+            @ApiResponse(code = 404, message = "Wallet does not exists."),
+    })
     @PatchMapping("/topup/{walletCurrency}")
-    public ResponseEntity topUpWallet(@PathVariable String walletCurrency,
-            @RequestBody HashMap<String, Double> payload) {
+    public ResponseEntity topUpWallet(@ApiParam(value = "Currency of wallet.") @PathVariable String walletCurrency,
+            @ApiParam(value = "Amount of money which will be added to the wallet. Allowed JSON key is: amount") @RequestBody HashMap<String, Double> payload) {
 
         Wallet wallet = walletService.findByCurrency(walletCurrency);
 
@@ -87,8 +112,13 @@ public class WalletController {
         return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESSFUL), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Deletes specific wallet.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful deletion of wallet."),
+            @ApiResponse(code = 400, message = "Wallet does not exists or is not empty."),
+    })
     @DeleteMapping("/{walletCurrency}")
-    public ResponseEntity deleteWallet(@PathVariable String walletCurrency) {
+    public ResponseEntity deleteWallet(@ApiParam(value = "Currency of wallet.") @PathVariable String walletCurrency) {
 
         if (walletService.delete(walletCurrency)) {
             return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESSFUL), HttpStatus.OK);

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
-import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
+import sk.hotovo.cryptowallet.model.dto.CurrencyPriceDto;
 
 @Service
 public class ExchangeServiceImpl implements ExchangeService {
@@ -78,7 +79,8 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public ArrayList<CryptoCurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize) {
+    @Cacheable("prices")
+    public ArrayList<CurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-CoinAPI-Key", cryptoCompareKey);
 
@@ -90,8 +92,8 @@ public class ExchangeServiceImpl implements ExchangeService {
 
             if (jsonResponse.getBody() != null) {
 
-                ArrayList<CryptoCurrencyPriceDto> prices = new ArrayList<>(
-                        Arrays.asList(objectMapper.readValue(jsonResponse.getBody(), CryptoCurrencyPriceDto[].class)));
+                ArrayList<CurrencyPriceDto> prices = new ArrayList<>(
+                        Arrays.asList(objectMapper.readValue(jsonResponse.getBody(), CurrencyPriceDto[].class)));
 
                 return doPagination(pageNumber, pageSize, prices);
             } else {

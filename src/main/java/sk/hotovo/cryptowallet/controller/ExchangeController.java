@@ -1,9 +1,12 @@
 package sk.hotovo.cryptowallet.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.ArrayList;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
 import sk.hotovo.cryptowallet.model.dto.BuyCurrencyDto;
-import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
+import sk.hotovo.cryptowallet.model.dto.CurrencyPriceDto;
 import sk.hotovo.cryptowallet.model.dto.WalletOutputDto;
 import sk.hotovo.cryptowallet.model.response.Response;
 import sk.hotovo.cryptowallet.model.response.ResponseCode;
@@ -36,19 +39,34 @@ public class ExchangeController {
         this.modelMapper = modelMapper;
     }
 
+    @ApiOperation(value = "Gets a list of available currencies with their values in USD.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieving was successful.")
+    })
     @GetMapping("/prices")
-    public ResponseEntity getAllPrices(@RequestParam(defaultValue = "0") Integer pageNumber,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+    public ResponseEntity getAllPrices(
+            @ApiParam(value = "Number of page where to start gathering data.") @RequestParam(defaultValue = "0") Integer pageNumber,
+            @ApiParam(value = "Number of results to be returned from given offset.") @RequestParam(defaultValue = "10") Integer pageSize) {
 
-        ArrayList<CryptoCurrencyPriceDto> prices = exchangeService.getPrices(pageNumber, pageSize);
+        ArrayList<CurrencyPriceDto> prices = exchangeService.getPrices(pageNumber, pageSize);
 
         return new ResponseEntity<>(
                 new Response<>(ResponseCode.SUCCESSFUL, prices), HttpStatus.OK);
 
     }
 
+    @ApiOperation(value = "Buys a specified currency using the specified amount of a specified currency."
+            + " The conversion is obtained from the real exchange rate. Obtained currency will be automatically transferred to the wallet with same currency.")
+    @ApiResponses(value = {
+
+            @ApiResponse(code = 200, message = "Transaction was successful."),
+            @ApiResponse(code = 400, message = "If there are insufficient funds or wallet does not exists."),
+            @ApiResponse(code = 503, message = "Cannot obtain exchange rate."),
+
+    })
     @PostMapping("/buy")
-    public ResponseEntity buyCurrency(@RequestBody @Valid BuyCurrencyDto buyCurrencyDto) {
+    public ResponseEntity buyCurrency(
+            @ApiParam(value = "Body should contain source wallet currency, amount of source currency to exchange and destination currency to buy.") @RequestBody @Valid BuyCurrencyDto buyCurrencyDto) {
         Wallet sourceWallet = walletService.findByCurrency(buyCurrencyDto.getSourceCurrency());
         Wallet destinationWallet = walletService.findByCurrency(buyCurrencyDto.getDestinationCurrency());
 
@@ -56,7 +74,8 @@ public class ExchangeController {
                 .getExchangeRate(buyCurrencyDto.getSourceCurrency(), buyCurrencyDto.getDestinationCurrency());
 
         if (exchangeRate == null) {
-            return new ResponseEntity<>(new Response(ResponseCode.ERROR), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Response(ResponseCode.CANNOT_OBTAIN_EXCHANGE_RATE),
+                    HttpStatus.SERVICE_UNAVAILABLE);
         }
 
         if (exchangeService

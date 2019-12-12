@@ -2,7 +2,7 @@ package sk.hotovo.cryptowallet.service;
 
 import java.util.ArrayList;
 import sk.hotovo.cryptowallet.model.dao.Wallet;
-import sk.hotovo.cryptowallet.model.dto.CryptoCurrencyPriceDto;
+import sk.hotovo.cryptowallet.model.dto.CurrencyPriceDto;
 
 public interface ExchangeService {
 
@@ -30,6 +30,6 @@ public interface ExchangeService {
      *
      * @return List of currencies and its prices in USD.
      */
-    ArrayList<CryptoCurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize);
+    ArrayList<CurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize);
 
 }

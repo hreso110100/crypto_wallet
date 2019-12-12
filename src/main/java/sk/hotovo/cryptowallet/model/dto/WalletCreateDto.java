@@ -1,17 +1,21 @@
 package sk.hotovo.cryptowallet.model.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 public class WalletCreateDto {
 
     @NotBlank
+    @ApiModelProperty(example = "myWallet")
     private String name;
 
     @NotBlank
+    @ApiModelProperty(example = "ETH")
     private String currency;
 
     @Range
+    @ApiModelProperty(example = "52000")
     private Double balance;
 
     public String getCurrency() {
