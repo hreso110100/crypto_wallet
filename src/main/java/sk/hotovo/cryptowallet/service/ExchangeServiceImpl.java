@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -79,7 +81,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    @Cacheable("prices")
+    @Cacheable(value = "prices")
     public ArrayList<CurrencyPriceDto> getPrices(Integer pageNumber, Integer pageSize) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-CoinAPI-Key", cryptoCompareKey);
@@ -102,6 +104,15 @@ public class ExchangeServiceImpl implements ExchangeService {
         } catch (RestClientException | JsonProcessingException e) {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Cleaning cache for gathered prices after 2 minutes.
+     */
+    @CacheEvict(cacheNames="prices", allEntries = true)
+    @Scheduled(fixedRate = 120000)
+    public void updateProduct() {
+        System.out.println("CACHE DELETED");
     }
 
     /**
